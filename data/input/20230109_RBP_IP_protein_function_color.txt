@@ -1,0 +1,93 @@
+Bait	Lifecycle_stage
+AGO2	degradation
+ALYREF	export
+BUD13	splicing
+CAPRIN1	localization
+CASC3	degradation
+CHTOP	export
+CNOT2	degradation
+CPSF7	3' end processing
+CSTF2	3' end processing
+CSTF2T	3' end processing
+DARS	translation
+DCP2	degradation
+DDX3X	translation
+DGCR8	degradation
+DHX38	splicing
+DLD	PDC
+DLST	PDC
+EIF3A	translation
+EIF4E	translation
+EIF4G2	translation
+EPRS	translation
+ERH	scaffold
+EWSR1	transcription
+EXOSC10	degradation
+EXOSC2	degradation
+EXOSC9	degradation
+FUS	splicing
+FYTTD1	export
+GPKOW	splicing
+HNRNPC	splicing
+HNRNPL	splicing
+IGF2BP1	localization
+IGF2BP2	localization
+KARS	translation
+LARP7	transcription
+LIN28B	stability
+LSM7	splicing
+MARS	translation
+MCM2	chromatin remodeling
+METTL3	modification
+MFAP1	splicing
+MRPS36	mitochondrial translation
+MSI2	translation
+NUP35	export
+PAN2	degradation
+PARN	degradation
+PCF11	3' end processing
+POLR2A	transcription
+POLR2A_pSer2	transcription
+POLR2A_pSer5	transcription
+POLR2A_pSer7	transcription
+PRPF3	splicing
+PRPF8	splicing
+PTBP1	splicing
+PUM2	degradation
+RARS	translation
+RBFOX2	splicing
+RBM22	splicing
+RPL10A	translation
+RPL18	translation
+RPL23	translation
+RPL23A	translation
+RPLP0	translation
+RPS2	translation
+RPS24	translation
+RPS3	translation
+RPS5	translation
+RPS6	translation
+RUVBL2	chromatin remodeling
+SART1	splicing
+SF1	splicing
+SF3A2	splicing
+SF3B4	splicing
+SNRNP200	splicing
+SNRPA1	splicing
+SNRPC	splicing
+SNRPD3	splicing
+SNU13	splicing
+SRSF1	splicing
+SRSF4	splicing
+SRSF5	splicing
+SYMPK	3' end processing
+TAF15	transcription
+THOC1	export
+TIA1	translation
+U2AF2	splicing
+UBAP2L	translation
+UPF2	degradation
+WBP11	splicing
+WTAP	modification
+XPO5	export
+XRN1	degradation
