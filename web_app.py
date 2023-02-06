@@ -224,133 +224,42 @@ def select_criteria():
     clustering_val = clustering.value
     feature = colorby.value
 
-    if ('IP' in dataset_val) and ('SEC' in dataset_val):
-        ProteinA_IP = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['IP_bait_gene']
-        ProteinB_IP = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['IP_prey_gene']
+    display_s = {'direct':'solid','mediated':'dashed','shielded':'dotted','undetermined':'dashdot','SEC':'solid'}
+    display_c = {'IP':'blue','SEC':'grey','both':'orange',True:'green'}
 
-        ProteinA_SEC = NW[NW['Interaction_support'] == 'SEC']['SEC_gene_A']
-        ProteinB_SEC = NW[NW['Interaction_support'] == 'SEC']['SEC_gene_B']
+    ProteinA = NW[ NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['Bait']
+    ProteinB = NW[ NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['Prey']
 
-        CORUM = NW['in_CORUM_2022']
-        SUPPORT = NW['Interaction_support']
-        interaction = NW['IP_interaction_type']
+    CORUM = NW[ NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['in_CORUM_2022']
+    SUPPORT = NW[ NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['Interaction_support']
+    interaction = NW[ NW['IP_interaction_type'].isin(interactionType_val + ['SEC'])]['IP_interaction_type']
 
-        colors = []
-        styles = []
+    styles = dict( zip( zip(ProteinA,ProteinB) , interaction) )
+    colors = dict( zip( zip(ProteinA,ProteinB) , SUPPORT) )
 
-        graph = ict(utils.to_adjacency_list(ProteinA_IP,ProteinB_IP) + utils.to_adjacency_list(ProteinA_SEC,ProteinB_SEC) )
-        
-        for inter,corum in zip(SUPPORT,CORUM):
-            if corum == True and ('CORUM' in dataset_val):
-                colors.append('green')
-            elif inter == 'IP':
-                colors.append('blue')
-            elif inter == 'SEC':
-                colors.append('grey')
-            elif inter == 'both':
-                colors.append('orange')
-            else:
-                colors.append('blue')
+    remove = None
 
-        for inter in interaction:
-            if inter == 'shielded':
-                styles.append('dotted')
-            elif inter == 'mediated':
-                styles.append('dashed')
-            elif inter == 'direct':
-                styles.append('solid')
-            elif inter == 'undetermined':
-                styles.append('dashdot')
-            else:
-                styles.append('solid')
+    if 'IP' in dataset_val and 'SEC' not in dataset_val:
+        remove = [k for k,v in styles.items() if v == 'SEC']
 
-        graph.setAttribute({node:'lightsteelblue' for node in graph.G.nodes},'color')
-        graph.setAttribute(dict(zip(graph.G.edges,colors)),'color',attr='edge')
-        graph.setAttribute(dict(zip(graph.G.edges,styles)),'style',attr='edge')
+    if 'SEC' in dataset_val and 'IP' not in dataset_val:
+        remove = [k for k,v in styles.items() if v != 'SEC']
 
-    elif ('IP' in dataset_val):
-        '''
-        IP only interaction filtering.
-        '''
-        ProteinA_IP = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['IP_bait_gene']
-        ProteinB_IP = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['IP_prey_gene']
-       
-        interaction = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['IP_interaction_type']
-        CORUM = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['in_CORUM_2022']
-        SUPPORT = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['Interaction_support']
-        colors = []
-        styles = []
+    if 'CORUM' in dataset_val:
+        corum = {k:v for k,v in dict( zip( zip(ProteinA,ProteinB) , CORUM) ).items() if v == True}
+        colors.update(corum)
 
-        graph = ict(utils.to_adjacency_list(ProteinA_IP,ProteinB_IP))
+    styles = {k:display_s[v] for k,v in styles.items()}
+    colors = {k:display_c[v] for k,v in colors.items()}
 
-        for inter,corum in zip(SUPPORT,CORUM):
-            if corum == True and ('CORUM' in dataset_val):
-                colors.append('green')
-            elif inter == 'IP':
-                colors.append('blue')
-            elif inter == 'SEC':
-                colors.append('grey')
-            elif inter == 'both':
-                colors.append('orange')
-            else:
-                colors.append('blue')
-        
-        for inter in interaction:
-            if inter == 'shielded':
-                styles.append('dotted')
-            elif inter == 'mediated':
-                styles.append('dashed')
-            elif inter == 'direct':
-                styles.append('solid')
-            elif inter == 'undetermined':
-                styles.append('dashdot')
-            else:
-                styles.append('solid')
+    graph = ict(utils.to_adjacency_list(ProteinA,ProteinB))
 
-        graph.setAttribute({node:'lightsteelblue' for node in graph.G.nodes},'color')
-        graph.setAttribute(dict(zip(graph.G.edges,colors)),'color',attr='edge')
-        graph.setAttribute(dict(zip(graph.G.edges,styles)),'style',attr='edge')
-    
-    elif ('SEC' in dataset_val): 
-        '''
-        SEC only interaction filtering.
-        '''
-        ProteinA_SEC = NW[NW['Interaction_support'].isin(['both','SEC']) & NW['IP_interaction_type'].isin(interactionType_val)]['SEC_gene_A']
-        ProteinB_SEC = NW[NW['Interaction_support'].isin(['both','SEC']) & NW['IP_interaction_type'].isin(interactionType_val)]['SEC_gene_B']
-        
-        CORUM = NW[NW['Interaction_support'].isin(['both','SEC']) & NW['IP_interaction_type'].isin(interactionType_val)]['in_CORUM_2022']
-        SUPPORT = NW[NW['Interaction_support'].isin(['both','SEC']) & NW['IP_interaction_type'].isin(interactionType_val)]['Interaction_support']
-        interaction = NW[NW['Interaction_support'].isin(['both','IP']) & NW['IP_interaction_type'].isin(interactionType_val)]['IP_interaction_type']
-        colors = []
-        graph = ict(utils.to_adjacency_list(ProteinA_SEC,ProteinB_SEC))
+    graph.setAttribute({node:'lightsteelblue' for node in graph.G.nodes},'color')
+    graph.setAttribute(colors,'color',attr='edge')
+    graph.setAttribute(styles,'style',attr='edge')
 
-        for inter,corum in zip(SUPPORT,CORUM):
-            if corum == True and ('CORUM' in dataset_val):
-                colors.append('green')
-            elif inter == 'IP':
-                colors.append('blue')
-            elif inter == 'SEC':
-                colors.append('grey')
-            elif inter == 'both':
-                colors.append('orange')
-            else:
-                colors.append('blue')
-
-        for inter in interaction:
-            if inter == 'shielded':
-                styles.append('dotted')
-            elif inter == 'mediated':
-                styles.append('dashed')
-            elif inter == 'direct':
-                styles.append('solid')
-            elif inter == 'undetermined':
-                styles.append('dashdot')
-            else:
-                styles.append('solid')
-
-        graph.setAttribute({node:'lightsteelblue' for node in graph.G.nodes},'color')
-        graph.setAttribute(dict(zip(graph.G.edges,colors)),'color',attr='edge')
-        graph.setAttribute(dict(zip(graph.G.edges,styles)),'style',attr='edge')
+    if remove:
+        graph.G.remove_edges_from(remove)
 
     if feature != 'none':
          graph.setAttribute(FEATURE_MAP[feature],'color')
@@ -420,7 +329,7 @@ def graph_statistics(graph_full,edges,CLUSTERED):
             label = 'undetermined'
             counts['Undetermined: '] += 1
 
-        labels.append(label)
+        labels.append(int_type + label)
 
     for type,c in counts.items():
         if c == None:
@@ -497,7 +406,7 @@ def update():
     source_edges.data = dict(xs=_edges['xs'], ys=_edges['ys'],style=_edges['style'],color=_edges['color'],label=labels)
     source_nodes.data = dict(xs=_nodes['xs'], ys=_nodes['ys'],name=names,color=_nodes['color'],node_size=_nodes['size'],label=_nodes['label'],Proteins=_nodes['Proteins'])
 
-    # Check if Clustered for saving Data
+    # Download button
     source_graph.data = pd.DataFrame({'x':[x[0] for x in graph_g.edges()],'y':[x[1] for x in graph_g.edges()],'edge_type':labels})
 
 # Populate Buttons

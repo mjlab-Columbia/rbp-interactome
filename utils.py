@@ -127,22 +127,11 @@ def name_complexes(graph):
 JAVSCRIPT_CODE="""
 var data = source.data;
 var filetext = data
-var CLUSTERED = data['CLUSTERED'][0]
-
-if (CLUSTERED === True) {
-    var filetext = 'Cluster1,Cluster2,interactionType,Cluster1Prots,Cluster2Prots\\n';
-}
-else {
-    var filetext = 'protein1,protein2,interactionType\\n';
-}
+var filetext = 'protein1,protein2,interactionType\\n'
 
 for (let i=0; i < data['x'].length; i++) {
-    if (CLUSTERED === True) {
-        var currRow = [data['x'][i].toString(), data['y'][i].toString(),data['edge_type'][i].toString(),data['Proteins'][i].toString().concat('\\n')];
-    }
-    else {
-        var currRow = [data['x'][i].toString(), data['y'][i].toString(),data['edge_type'][i].toString().concat('\\n')];
-    }
+
+    var currRow = [data['x'][i].toString(), data['y'][i].toString(),data['edge_type'][i].toString().concat('\\n')];
 	var joined = currRow.join();
 	filetext = filetext.concat(joined);
 }	
