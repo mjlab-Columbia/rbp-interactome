@@ -97,17 +97,23 @@ class interactome:
 
         :return: A networkx subgraph of nodes in and connected to nbrs.
         '''
-        nodes = set(nbrs)
+        nodes = set([x for x in nbrs if len(x) != 1])
+        updated_nodes = set([x for x in nbrs if len(x) != 1])
 
         for i in range(hops):
-            for nbr in sorted(nodes):
+            nodes = updated_nodes.copy()
+
+            for nbr in nodes:
                 try:
-                    nodes.update(self.G.neighbors(nbr))
-                    nodes.update(nbr)
+                    for edge in self.G.edges(nbr):
+                        color= self.G.get_edge_data(*edge)['color']
+
+                        if color != 'grey':
+                            updated_nodes.add(edge[1])
                 except:
                     continue
 
-        return self.G.subgraph(list(nodes))
+        return self.G.subgraph(list(updated_nodes))
 
     def setAttribute(self,labels,name,attr='node'):
         '''

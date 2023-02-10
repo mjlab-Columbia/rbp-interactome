@@ -107,8 +107,6 @@ def name_complexes(graph):
                     assigns[comm] = (CORUM[CORUM['subunits(Gene name)'] == genes]['ComplexName'].tolist()[0], int(prots.most_common(2)[1][1]))
             
             else:
-                
-                #pdb.set_trace()
                 comm = int(prots.most_common(1)[0][0])
                 
                 try:
@@ -120,14 +118,14 @@ def name_complexes(graph):
 
                 
         
-        assigns = {k:str(v[0]) for k,v in assigns.items()}
+        assigns = {k:str(v[0]).replace(',',';') for k,v in assigns.items()}
 
         nx.relabel_nodes(graph.induced_g,assigns,copy=False)
 
 JAVSCRIPT_CODE="""
 var data = source.data;
 var filetext = data
-var filetext = 'protein1,protein2,interactionType\\n'
+var filetext = 'Node1,Node2,interactionType\\n'
 
 for (let i=0; i < data['x'].length; i++) {
 

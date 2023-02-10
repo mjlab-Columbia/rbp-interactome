@@ -237,14 +237,6 @@ def select_criteria():
     styles = dict( zip( zip(ProteinA,ProteinB) , interaction) )
     colors = dict( zip( zip(ProteinA,ProteinB) , SUPPORT) )
 
-    remove = None
-
-    if 'IP' in dataset_val and 'SEC' not in dataset_val:
-        remove = [k for k,v in styles.items() if v == 'SEC']
-
-    if 'SEC' in dataset_val and 'IP' not in dataset_val:
-        remove = [k for k,v in styles.items() if v != 'SEC']
-
     if 'CORUM' in dataset_val:
         corum = {k:v for k,v in dict( zip( zip(ProteinA,ProteinB) , CORUM) ).items() if v == True}
         colors.update(corum)
@@ -257,9 +249,6 @@ def select_criteria():
     graph.setAttribute({node:'lightsteelblue' for node in graph.G.nodes},'color')
     graph.setAttribute(colors,'color',attr='edge')
     graph.setAttribute(styles,'style',attr='edge')
-
-    if remove:
-        graph.G.remove_edges_from(remove)
 
     if feature != 'none':
          graph.setAttribute(FEATURE_MAP[feature],'color')
@@ -274,6 +263,17 @@ def select_criteria():
         graph.cluster(clustering_val,resolution=resolution_val)
         graph.induced()
         CLUSTERED = True
+
+    remove = None
+
+    if 'IP' in dataset_val and 'SEC' not in dataset_val:
+        remove = [k for k,v in colors.items() if v == display_c['SEC']]
+
+    if 'SEC' in dataset_val and 'IP' not in dataset_val:
+        remove = [k for k,v in  colors.items() if v != display_c['SEC']]
+
+    if remove:
+        graph.G.remove_edges_from(remove)
 
     return graph,CLUSTERED,layout_val,feature
 
