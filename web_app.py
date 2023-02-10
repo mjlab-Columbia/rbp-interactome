@@ -237,10 +237,6 @@ def select_criteria():
     styles = dict( zip( zip(ProteinA,ProteinB) , interaction) )
     colors = dict( zip( zip(ProteinA,ProteinB) , SUPPORT) )
 
-    if 'CORUM' in dataset_val:
-        corum = {k:v for k,v in dict( zip( zip(ProteinA,ProteinB) , CORUM) ).items() if v == True}
-        colors.update(corum)
-
     styles = {k:display_s[v] for k,v in styles.items()}
     colors = {k:display_c[v] for k,v in colors.items()}
 
@@ -266,11 +262,17 @@ def select_criteria():
 
     remove = None
 
+    if 'CORUM' in dataset_val:
+        corum = {k:display_c[v] for k,v in dict( zip( zip(ProteinA,ProteinB) , CORUM) ).items() if v == True}
+        colors = nx.get_edge_attributes(graph.G,'color')
+        colors.update(corum)
+        graph.setAttribute(colors,'color',attr='edge')
+
     if 'IP' in dataset_val and 'SEC' not in dataset_val:
         remove = [k for k,v in colors.items() if v == display_c['SEC']]
 
     if 'SEC' in dataset_val and 'IP' not in dataset_val:
-        remove = [k for k,v in  colors.items() if v != display_c['SEC']]
+        remove = [k for k,v in  colors.items() if v != display_c['SEC'] and v != display_c['both']]
 
     if remove:
         graph.G.remove_edges_from(remove)
@@ -292,7 +294,7 @@ def graph_statistics(graph_full,edges,CLUSTERED):
                   'Number of Interactions: ' + str(len(graph.edges())) + '\n\n' 
     labels = []
     counts = {'Direct: ' :0,'RNA mediated: ':0, 'RNA shielded: ':0,'Undetermined: ':0,'Spacer':None, \
-        'Shared interactions: ':0, 'IP interactions: ':0,'SEC interactions: ':0,'CORUM interactions: ':0}
+        'Shared interactions: ':0, 'IP only interactions: ':0,'SEC only interactions: ':0,'CORUM interactions: ':0}
 
     for idx,edge in enumerate(edges['color']):
 
@@ -303,11 +305,11 @@ def graph_statistics(graph_full,edges,CLUSTERED):
 
         elif edge == 'blue':
             int_type = 'IP '
-            counts['IP interactions: '] += 1
+            counts['IP only interactions: '] += 1
 
         elif edge == 'grey':
             int_type = 'SEC '
-            counts['SEC interactions: '] += 1
+            counts['SEC only interactions: '] += 1
 
         elif edge == 'orange':
             int_type = 'Shared '

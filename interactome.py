@@ -108,7 +108,7 @@ class interactome:
                     for edge in self.G.edges(nbr):
                         color= self.G.get_edge_data(*edge)['color']
 
-                        if color != 'grey':
+                        if color != 'grey' and color != 'green':
                             updated_nodes.add(edge[1])
                 except:
                     continue
